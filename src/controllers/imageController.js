@@ -1,19 +1,22 @@
 import { uploadImage } from '../services/imageService.js'; // Asegúrate de tener la lógica para subir la imagen en este servicio
-
+import fs from 'fs'
 export async function uploadSingleImage(req, res) {
-  const { buffer, size } = req.file;
-  const maxSize = 1024 * 1024 * 2; // 2MB
+  const { path, size } = req.file; // as Express.Multer.File;
+
+  const maxSize = 1024 * 1024 * 2; // 2mb
 
   if (size > maxSize) {
+    fs.unlinkSync(path);
     return res.status(400).json({ message: 'File is too large' });
   }
 
   try {
-    // Pasa el buffer directamente al servicio de subida
-    const result = await uploadImage(buffer);
-    return res.json(result);
+    const result = await uploadImage(path);
+
+    return res.status(201).json(result);
   } catch (error) {
-    console.error('Error uploading image:', error);
-    return res.status(500).json({ message: 'Failed to upload image', error });
+    return res.status(500).json(error);
+  } finally {
+    fs.unlinkSync(path);
   }
 }

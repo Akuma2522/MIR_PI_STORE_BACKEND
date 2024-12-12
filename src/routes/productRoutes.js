@@ -11,7 +11,7 @@ import { uploadSingleImage } from '../controllers/imageController.js';
 import { authenticateUser, authorizeAdmin } from '../auth/auth.js';
 
 const router = express.Router();
-const upload = multer(); // Middleware para manejar archivos
+const upload = multer({ dest: './temp' }); // Middleware para manejar archivos
 
 router.get("/", getProductsHandler);
 router.get("/:id", getProductByIdHandler);

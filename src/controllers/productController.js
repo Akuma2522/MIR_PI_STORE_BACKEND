@@ -10,7 +10,6 @@ import {
 export async function getProductsHandler(req, res) {
   try {
     const products = await getAllProducts();
-    console.log(products);
     res.json(products);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -28,7 +27,6 @@ export async function getProductByIdHandler(req, res) {
 
 export async function createProductHandler(req, res) {
   try {
-    console.log(req);
     const product = await createProduct(req.body);
     res.status(201).json(product);
   } catch (error) {
