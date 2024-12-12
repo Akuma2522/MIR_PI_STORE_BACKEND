@@ -1,33 +1,15 @@
 import { PrismaClient } from '@prisma/client';
-const cloudinary = require("../utils/cloudinaryConfig");
+import cloudinary from '../utils/cloudinaryConfig.js';
 
 const prisma = new PrismaClient();
 
-export async function getAllProducts(category, minPrice, maxPrice) {
-  const filters = {};
-
-  if (category) {
-    filters.category = category;
-  }
-  if (minPrice) {
-    filters.price = { gte: parseFloat(minPrice) };
-  }
-  if (maxPrice) {
-    filters.price = { lte: parseFloat(maxPrice) };
-  }
-
-  return prisma.product.findMany({
-    where: filters,
-  });
+export async function getAllProducts() {
+  return await prisma.product.findMany();
 };
 
-export async function createProduct(data, imageFile) {
-  let imageUrl = "";
 
-  if (imageFile) {
-    const uploadResponse = await cloudinary.uploader.upload(imageFile.path);
-    imageUrl = uploadResponse.secure_url;
-  }
+export async function createProduct(data) {
+
 
   return prisma.product.create({
     data: {
@@ -35,19 +17,20 @@ export async function createProduct(data, imageFile) {
       description: data.description,
       price: parseFloat(data.price),
       category: data.category,
-      image: imageUrl,
+      image: data.image,
     },
   });
 };
 
-export async function updateProduct(productId, data, imageFile) {
-  let updateData = { ...data };
 
-  if (imageFile) {
-    const uploadResponse = await cloudinary.uploader.upload(imageFile.path);
-    updateData.image = uploadResponse.secure_url;
-  }
+export async function getProductById(productId) {
+  return prisma.product.findUnique({
+    where: { id: parseInt(productId) },
+  });
+}
 
+export async function updateProduct(productId, data) {
+  let updateData = data;
   return prisma.product.update({
     where: { id: parseInt(productId) },
     data: updateData,

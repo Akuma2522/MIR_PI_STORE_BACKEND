@@ -1,4 +1,4 @@
-import { registerUser, loginUser } from '../services/userService';
+import { registerUser, loginUser } from '../services/userService.js';
 
 export async function registerUserHandler(req, res) {
   try {
@@ -13,6 +13,7 @@ export async function loginHandler(req, res) {
   const { email, password } = req.body;
   try {
     const { token, user } = await loginUser(email, password);
+    console.log(token);
     res.json({ token, user });
   } catch (error) {
     res.status(401).json({ error: error.message });

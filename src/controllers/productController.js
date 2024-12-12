@@ -1,33 +1,43 @@
 import {
   getAllProducts,
+  getProductById,
   createProduct,
   updateProduct,
   deleteProductById
-} from '../services/productService';
+
+} from '../services/productService.js';
 
 export async function getProductsHandler(req, res) {
   try {
-    const { category, minPrice, maxPrice } = req.query;
-    const products = await getAllProducts(category, minPrice, maxPrice);
+    const products = await getAllProducts();
+    console.log(products);
     res.json(products);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-export async function createProductHandler(req, res) {
+export async function getProductByIdHandler(req, res) {
   try {
-    const product = await createProduct(req.body, req.file);
-    res.status(201).json(product);
+    const product = await getProductById(req.params.id);
+    res.json(product);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-
+export async function createProductHandler(req, res) {
+  try {
+    console.log(req);
+    const product = await createProduct(req.body);
+    res.status(201).json(product);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 export async function updateProductHandler(req, res) {
   try {
-    const updatedProduct = await updateProduct(req.params.id, req.body, req.file);
+    const updatedProduct = await updateProduct(req.params.id, req.body);
     res.json(updatedProduct);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -42,4 +52,5 @@ export async function deleteProductHandler(req, res) {
     res.status(400).json({ error: error.message });
   }
 };
+
 
