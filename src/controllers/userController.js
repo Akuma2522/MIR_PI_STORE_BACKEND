@@ -13,8 +13,7 @@ export async function loginHandler(req, res) {
   const { email, password } = req.body;
   try {
     const { token, user } = await loginUser(email, password);
-    console.log(token);
-    res.json({ token, user });
+    res.status(200).json({ token, user });
   } catch (error) {
     res.status(401).json({ error: error.message });
   }
